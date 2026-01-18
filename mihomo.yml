@@ -185,6 +185,14 @@ proxy-groups:
       - 链式代理
       - 节点1
 
+  # YouTube
+  - name: YouTube
+    type: select
+    proxies:
+      - 代理
+      - 链式代理
+      - 节点1
+
   # 链式代理-中转
   - name: "中转节点"
     type: select
@@ -255,6 +263,12 @@ rule-providers:
     url: "https://raw.githubusercontent.com/Yeqingky/ACL4SSR/refs/heads/master/Clash/Providers/Ruleset/Telegram.yaml"
     interval: 86400
     path: ./ACL4SSR/Telegram.yaml
+  YouTube:
+    behavior: classical
+    type: http
+    url: "https://quantil.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/Ruleset/YouTube.yaml"
+    interval: 86400
+    path: ./ACL4SSR/YouTube.yaml
 
 # 规则
 rules:
@@ -266,6 +280,7 @@ rules:
   - RULE-SET,LocalAreaNetwork,DIRECT
   - RULE-SET,UnBan,DIRECT
   - RULE-SET,Telegram,代理
+  - RULE-SET,YouTube,YouTube
 
   - RULE-SET,AI,AI
 
