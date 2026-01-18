@@ -216,7 +216,8 @@ rule-providers:
 
 # 规则
 rules:
-  # 直连规则优先
+  # 规则集分流
+  - RULE-SET,Google,代理
 
   # 局域网直连
   - IP-CIDR,10.0.0.0/8,DIRECT
@@ -225,8 +226,6 @@ rules:
   - IP-CIDR,100.64.0.0/10,DIRECT
   - IP-CIDR,127.0.0.0/8,DIRECT
 
-  # 规则集分流
-  - RULE-SET,Google,代理
-
   # 兜底
-  - MATCH,漏网之鱼
+  - GEOIP,CN,DIRECT
+  - MATCH,代理
