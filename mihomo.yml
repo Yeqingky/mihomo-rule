@@ -145,8 +145,6 @@ dns:
   fallback-filter:
     geoip: true
     geoip-code: CN
-    geosite:
-      - gfw
     ipcidr:
       - 240.0.0.0/4
     domain:
@@ -164,6 +162,9 @@ dns:
     "geosite:geolocation-!cn":
       - "tls://dns.google"
       - "tls://cloudflare-dns.com"
+    "geosite:gfw":
+      - https://dns.google/dns-query
+      - https://cloudflare-dns.com/dns-query
 
 # 基础节点
 proxies:
