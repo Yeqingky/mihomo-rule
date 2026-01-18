@@ -213,17 +213,77 @@ rule-providers:
     url: "https://8.210.184.251/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/Providers/Ruleset/AI.yaml"
     interval: 86400
     path: ./ACL4SSR/AI.yaml
+  GoogleCN:
+    behavior: classical
+    type: http
+    url: "https://quantil.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/Ruleset/GoogleCN.yaml"
+    interval: 86400
+    path: ./ACL4SSR/GoogleCN.yaml
+  ChinaIp:
+    behavior: ipcidr
+    type: http
+    url: "https://quantil.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/ChinaIp.yaml"
+    interval: 86400
+    path: ./ACL4SSR/ChinaIp.yaml
+  ChinaDomain:
+    behavior: classical
+    type: http
+    url: "https://quantil.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/ChinaDomain.yaml"
+    interval: 86400
+    path: ./ACL4SSR/ChinaDomain.yaml
+  ChinaCompanyIp:
+    behavior: ipcidr
+    type: http
+    url: "https://quantil.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/ChinaCompanyIp.yaml"
+    interval: 86400
+    path: ./ACL4SSR/ChinaCompanyIp.yaml
+  LocalAreaNetwork:
+    behavior: classical
+    type: http
+    url: "https://quantil.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/LocalAreaNetwork.yaml"
+    interval: 86400
+    path: ./ACL4SSR/LocalAreaNetwork.yaml
+  UnBan:
+    behavior: classical
+    type: http
+    url: "https://quantil.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/UnBan.yaml"
+    interval: 86400
+    path: ./ACL4SSR/UnBan.yaml
+  Telegram:
+    behavior: classical
+    type: http
+    url: "https://raw.githubusercontent.com/Yeqingky/ACL4SSR/refs/heads/master/Clash/Providers/Ruleset/Telegram.yaml"
+    interval: 86400
+    path: ./ACL4SSR/Telegram.yaml
 
 # 规则
 rules:
   # 规则集分流
+  - RULE-SET,GoogleCN,DIRECT
+  - RULE-SET,ChinaIp,DIRECT
+  - RULE-SET,ChinaDomain,DIRECT
+  - RULE-SET,ChinaCompanyIp,DIRECT
+  - RULE-SET,LocalAreaNetwork,DIRECT
+  - RULE-SET,UnBan,DIRECT
+  - RULE-SET,Telegram,代理
+
   - RULE-SET,AI,AI
 
+  # 大厂服务
+  - DOMAIN-SUFFIX,wechat.com,DIRECT
+  - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+  - DOMAIN-SUFFIX,qq.com,DIRECT
+  - DOMAIN-SUFFIX,qpic.cn,DIRECT
+
+  # 大厂服务
+  - PROCESS-NAME,WeChat.exe,DIRECT
+  - PROCESS-NAME,Weixin.exe,DIRECT
+
   # 兜底
-  - GEOSITE,google,代理
-  - GEOSITE,geolocation-!cn,代理
   - GEOSITE,CN,DIRECT
   - GEOIP,CN,DIRECT
+  - GEOSITE,google,代理
+  - GEOSITE,geolocation-!cn,代理
 
   # 局域网直连
   - GEOSITE,private,DIRECT
