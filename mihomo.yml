@@ -1,0 +1,232 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+
+# NTP
+ntp:
+  enable: true
+  write-to-system: false
+  server: time.apple.com
+  port: 123
+  interval: 30
+
+# 基础节点
+proxies:
+  - 节点1
+
+# 域名嗅探
+sniffer:
+  enable: true
+  parse-pure-ip: true
+  override-destination: false
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+      override-destination: false
+    QUIC:
+      ports: [443, 8443]
+      override-destination: false
+  skip-domain:
+    - "Mijia Cloud"
+    - "+.push.apple.com"
+    - "+.wechat.com"
+    - "+.qpic.cn"
+    - "+.qq.com"
+    - "+.wechatapp.com"
+    - "+.vivox.com"
+    - "+.oray.com"
+    - "+.sunlogin.net"
+  skip-dst-address:
+    - "149.154.160.0/20"
+    - "185.76.151.0/24"
+    - "91.105.192.0/23"
+    - "91.108.16.0/21"
+    - "91.108.4.0/22"
+    - "91.108.56.0/22"
+    - "91.108.8.0/21"
+    - "95.161.64.0/20"
+    - "2001:67c:4e8::/48"
+    - "2001:b28:f23c::/47"
+    - "2001:b28:f23f::/48"
+    - "2a0a:f280::/29"
+    - "127.0.0.0/8"
+    - "10.0.0.0/8"
+    - "172.16.0.0/12"
+    - "192.168.0.0/16"
+    - "169.254.0.0/16"
+    - "224.0.0.0/4"
+    - "240.0.0.0/4"
+    - "fc00::/7"
+    - "fe80::/10"
+    - "::1/128"
+
+# Tun
+tun:
+  enable: true
+  stack: mixed # system gvisor mixed
+  auto-route: true
+  strict-route: true
+  dns-hijack:
+    - any:53
+    - any:853
+
+# DNS
+dns:
+  enable: true
+  cache-algorithm: arc
+  listen: 127.0.0.1:1053
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  prefer-h3: false
+  ipv6: true
+  respect-rules: true
+  use-hosts: true
+  use-system-hosts: false
+
+  fake-ip-filter:
+    - "+.lan"
+    - "+.local"
+    - "+.arpa"
+    - "localhost.ptlogin2.qq.com"
+    - "localhost.work.weixin.qq.com"
+    - "+.msftncsi.com"
+    - "+.msftconnecttest.com"
+    - "time.*.com"
+    - "ntp.*.com"
+    - geosite:connectivity-check
+    - geosite:private
+    - geosite:cn
+    - +.stun.*.*
+    - +.stun.*.*.*
+    - +.stun.*.*.*.*
+    - +.stun.*.*.*.*.*
+    - "*.n.n.srv.nintendo.net"
+    - +.stun.playstation.net
+    - "*.*.xboxlive.com"
+    - +.teracloud.jp
+    - "+.t.me"
+    - "+.telegram.org"
+    - "+.telegram.me"
+    - "+.tdesktop.com"
+    - "+.telegra.ph"
+    - "+.telesco.pe"
+    - "+.telegram-cdn.org"
+    - "+.cdn-telegram.org"
+    - "+.telegramdownload.com"
+    - "+.telegram.dog"
+    - "+.graph.org"
+    - "+.legra.ph"
+    - "+.tx.me"
+    - "+.tg.dev"
+    - "WORKGROUP"
+
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+
+  proxy-server-nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+
+  fallback:
+    - "tls://8.8.8.8"
+    - "tls://1.1.1.1"
+
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+    domain:
+      - "+.google.com"
+      - "+.facebook.com"
+      - "+.youtube.com"
+
+  nameserver-policy:
+    "geosite:cn":
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    "geosite:private":
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    "geosite:geolocation-!cn":
+      - "tls://dns.google"
+      - "tls://cloudflare-dns.com"
+
+# 代理组
+# 基础代理组
+proxy-groups:
+  - name: 代理
+    type: select
+    proxies:
+      - 链式代理
+      - 节点1
+  # AI分流
+  - name: AI
+    type: select
+    proxies:
+      - 代理
+      - 链式代理
+      - 节点1
+
+  # 链式代理-中转
+  - name: "中转节点"
+    type: select
+    proxies:
+      - 节点1
+
+  # 链式代理-落地
+  - name: "链式代理"
+    type: select
+    use: ["落地节点"]
+
+# 链式代理-落地节点
+proxy-providers:
+  落地节点:
+    type: inline
+    override:
+      dialer-proxy: 中转节点
+    payload:
+      - 节点2
+
+# 规则集
+rule-providers:
+  Google:
+    behavior: classical
+    type: http
+    url: "https://8.210.184.251/https://raw.githubusercontent.com/Yeqingky/mihomo-rule/refs/heads/main/Google.yml"
+    interval: 86400
+    path: ./mihomo-rule/Google.yaml
+
+# 规则
+rules:
+  # 直连规则优先
+
+  # 局域网直连
+  - IP-CIDR,10.0.0.0/8,DIRECT
+  - IP-CIDR,172.16.0.0/12,DIRECT
+  - IP-CIDR,192.168.0.0/16,DIRECT
+  - IP-CIDR,100.64.0.0/10,DIRECT
+  - IP-CIDR,127.0.0.0/8,DIRECT
+
+  # 规则集分流
+  - RULE-SET,Google,代理
+
+  # 兜底
+  - MATCH,漏网之鱼
