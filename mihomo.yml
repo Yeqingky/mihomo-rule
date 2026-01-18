@@ -207,17 +207,17 @@ proxy-providers:
 
 # 规则集
 rule-providers:
-  Google:
+  AI:
     behavior: classical
     type: http
-    url: "https://8.210.184.251/https://raw.githubusercontent.com/Yeqingky/mihomo-rule/refs/heads/main/Google.yml"
+    url: "https://8.210.184.251/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/Providers/Ruleset/AI.yaml"
     interval: 86400
-    path: ./mihomo-rule/Google.yaml
+    path: ./ACL4SSR/AI.yaml
 
 # 规则
 rules:
   # 规则集分流
-  # - RULE-SET,Google,代理
+  - RULE-SET,AI,AI
 
   # 兜底
   - GEOSITE,google,代理
