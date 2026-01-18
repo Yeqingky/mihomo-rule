@@ -206,13 +206,13 @@ proxy-providers:
       - 节点2
 
 # 规则集
-# rule-providers:
-#   Google:
-#     behavior: classical
-#     type: http
-#     url: "https://8.210.184.251/https://raw.githubusercontent.com/Yeqingky/mihomo-rule/refs/heads/main/Google.yml"
-#     interval: 86400
-#     path: ./mihomo-rule/Google.yaml
+rule-providers:
+  Google:
+    behavior: classical
+    type: http
+    url: "https://8.210.184.251/https://raw.githubusercontent.com/Yeqingky/mihomo-rule/refs/heads/main/Google.yml"
+    interval: 86400
+    path: ./mihomo-rule/Google.yaml
 
 # 规则
 rules:
