@@ -16,10 +16,6 @@ ntp:
   port: 123
   interval: 30
 
-# 基础节点
-proxies:
-  - 节点1
-
 # 域名嗅探
 sniffer:
   enable: true
@@ -168,6 +164,10 @@ dns:
     "geosite:geolocation-!cn":
       - "tls://dns.google"
       - "tls://cloudflare-dns.com"
+
+# 基础节点
+proxies:
+  - 节点1
 
 # 代理组
 # 基础代理组
